@@ -1,13 +1,8 @@
-@font-face {
-    font-family: 'blog font';
-    src: url('https://api.fis.ink/fishcpy/ziti/fontwx.woff2') format('truetype');
-    font-weight: normal;
-    font-style: normal;
-    font-display: swap;
-}
+/* 导入 ChillRoundFRegular 字体 */
+@import url('https://cdn.xrbk.cn/fonts/ChillRoundFRegular/result.css');
 
 :root {
-    --font-primary: 'blog font', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    --font-primary: '寒蝉全圆体', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
 }
 
 /* 自定义鼠标样式 - 仅在桌面端显示 */
