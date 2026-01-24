@@ -19,7 +19,7 @@
 		"@astrojs/check": "^0.9.5",
 		"@astrojs/rss": "^4.0.13",
 		"@astrojs/sitemap": "^3.5.1",
-		"@astrojs/svelte": "7.1.1",
+		"@astrojs/svelte": "7.2.5",
 		"@astrojs/tailwind": "^6.0.2",
 		"@astrojs/vercel": "^8.2.11",
 		"@expressive-code/core": "^0.41.2",
@@ -81,4 +81,4 @@
 		"postcss-stylus": "https://github.com/stylus/stylus/archive/refs/tags/0.64.0.tar.gz"
 	},
 	"packageManager": "pnpm@9.14.4"
-}
+}   
