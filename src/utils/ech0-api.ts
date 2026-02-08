@@ -8,6 +8,16 @@ interface EssayData {
   images?: string[];
 }
 
+// 备用数据，当API获取失败时使用
+const fallbackData: EssayData[] = [
+  {
+    id: 1,
+    content: "数据加载中，请稍后刷新页面...",
+    time: new Date().toISOString().split('T')[0],
+    tags: ['系统'],
+  }
+];
+
 /**
  * 从Ech0 RSS获取动态数据
  * @param apiUrl Ech0 API地址
@@ -15,18 +25,45 @@ interface EssayData {
  */
 export async function fetchEch0Posts(apiUrl: string): Promise<EssayData[]> {
   try {
-    const response = await fetch(`${apiUrl}/rss`);
+    console.log('Fetching Ech0 posts from:', `${apiUrl}/rss`);
+    
+    // 设置超时
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 10000); // 10秒超时
+    
+    const response = await fetch(`${apiUrl}/rss`, {
+      signal: controller.signal,
+      headers: {
+        'Accept': 'application/rss+xml, application/xml, text/xml, */*',
+      }
+    });
+    
+    clearTimeout(timeoutId);
     
     if (!response.ok) {
-      throw new Error(`Failed to fetch Ech0 posts: ${response.status}`);
+      throw new Error(`Failed to fetch Ech0 posts: ${response.status} ${response.statusText}`);
     }
     
     const xmlText = await response.text();
-    return parseRssData(xmlText);
+    console.log('RSS response length:', xmlText.length);
+    
+    if (!xmlText || xmlText.length === 0) {
+      throw new Error('Empty RSS response');
+    }
+    
+    const data = parseRssData(xmlText);
+    console.log('Parsed essays count:', data.length);
+    
+    if (data.length === 0) {
+      console.warn('No essays found in RSS feed');
+      return fallbackData;
+    }
+    
+    return data;
   } catch (error) {
     console.error('Error fetching Ech0 posts:', error);
-    // 出错时返回空数组，避免页面崩溃
-    return [];
+    // 出错时返回备用数据，避免页面显示空白
+    return fallbackData;
   }
 }
 
@@ -81,6 +118,8 @@ function parseRssData(xmlText: string): EssayData[] {
  * @returns 纯文本
  */
 function extractPlainText(html: string): string {
+  if (!html) return '[无内容]';
+  
   // 解码HTML实体
   let decodedHtml = html
     .replace(/&lt;/g, '<')
@@ -89,7 +128,10 @@ function extractPlainText(html: string): string {
     .replace(/&quot;/g, '"')
     .replace(/&#34;/g, '"')
     .replace(/&#39;/g, "'")
-    .replace(/&#xA;/g, '\n');
+    .replace(/&#xA;/g, '\n')
+    .replace(/&#xD;/g, '\r')
+    .replace(/&#10;/g, '\n')
+    .replace(/&#13;/g, '\r');
   
   // 使用正则表达式移除HTML标签
   let plainText = decodedHtml.replace(/<[^>]*>/g, '').trim();
@@ -104,7 +146,7 @@ function extractPlainText(html: string): string {
  * @returns 图片URL数组
  */
 function extractImages(html: string): string[] {
-  console.log('原始HTML:', html);
+  if (!html) return [];
   
   // 解码HTML实体
   let decodedHtml = html
@@ -115,8 +157,6 @@ function extractImages(html: string): string[] {
     .replace(/&#34;/g, '"')
     .replace(/&#39;/g, "'");
   
-  console.log('解码后HTML:', decodedHtml);
-  
   // 使用更宽松的正则表达式提取图片URL
   const imgRegex = /<img[^>]*src=["']([^"']+)["']/gi;
   const images: string[] = [];
@@ -124,18 +164,15 @@ function extractImages(html: string): string[] {
   
   while ((match = imgRegex.exec(decodedHtml)) !== null) {
     let url = match[1];
-    console.log('找到图片URL:', url);
     
     // 将HTTP URL转换为HTTPS
     if (url.startsWith('http://')) {
       url = url.replace('http://', 'https://');
-      console.log('转换为HTTPS:', url);
     }
     
     images.push(url);
   }
   
-  console.log('最终图片数组:', images);
   return images;
 }
 
@@ -145,6 +182,12 @@ function extractImages(html: string): string[] {
  * @returns YYYY-MM-DD格式的日期字符串
  */
 function formatDate(dateString: string): string {
-  const date = new Date(dateString);
-  return date.toISOString().split('T')[0];
+  if (!dateString) return new Date().toISOString().split('T')[0];
+  
+  try {
+    const date = new Date(dateString);
+    return date.toISOString().split('T')[0];
+  } catch {
+    return new Date().toISOString().split('T')[0];
+  }
 }
