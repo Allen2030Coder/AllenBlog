@@ -208,13 +208,13 @@ export const expressiveCodeConfig: ExpressiveCodeConfig = {
 
 export const commentConfig: CommentConfig = {
 	enable: true,
-	type: "twikoo",
+	type: "artalk",
 	twikoo: {
 		envId: "https://twikoo.allen2030.com",
 	},
 	artalk: {
 		server: "https://artalk.allen2030.com",
-		site: " ",
+		site: "AllenBlog",
 		darkMode: false, // 强制浅色模式，不跟随浏览器主题
 	},
 };
@@ -310,7 +310,7 @@ export const beautifyConfig: BeautifyConfig = {
 
 // 鼠标样式配置
 export const cursorConfig = {
-	overrideDefault: false, // 是否覆盖访问者系统默认鼠标样式 (false=尊重用户设置, true=强制覆盖)
+	overrideDefault: true, // 是否覆盖访问者系统默认鼠标样式 (false=尊重用户设置, true=强制覆盖)
 };
 
 // 使用说明：
