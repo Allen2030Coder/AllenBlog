@@ -8,12 +8,58 @@ interface EssayData {
 	images?: string[];
 }
 
+/**
+ * 格式化日期对象为字符串
+ * @param date 日期对象
+ * @returns YYYY-MM-DD HH:MM格式的日期时间字符串
+ */
+function formatDateString(date: Date): string {
+	const year = date.getFullYear();
+	const month = String(date.getMonth() + 1).padStart(2, '0');
+	const day = String(date.getDate()).padStart(2, '0');
+	const hours = String(date.getHours()).padStart(2, '0');
+	const minutes = String(date.getMinutes()).padStart(2, '0');
+	return `${year}-${month}-${day} ${hours}:${minutes}`;
+}
+
+/**
+ * 格式化日期时间
+ * @param dateString ISO日期字符串
+ * @returns YYYY-MM-DD HH:MM格式的日期时间字符串
+ */
+function formatDateTime(dateString: string): string {
+	if (!dateString) {
+		const now = new Date();
+		return formatDateString(now);
+	}
+
+	try {
+		const date = new Date(dateString);
+		return formatDateString(date);
+	} catch {
+		const now = new Date();
+		return formatDateString(now);
+	}
+}
+
 // 备用数据，当API获取失败时使用
-const fallbackData: EssayData[] = [
+export const fallbackData: EssayData[] = [
 	{
 		id: 1,
-		content: "数据加载中，请稍后刷新页面...",
-		time: new Date().toISOString().split("T")[0],
+		content: "欢迎来到我的说说页面！",
+		time: formatDateTime(new Date().toISOString()),
+		tags: ["生活"],
+	},
+	{
+		id: 2,
+		content: "这里记录了我的日常分享和思考。",
+		time: formatDateTime(new Date().toISOString()),
+		tags: ["生活"],
+	},
+	{
+		id: 3,
+		content: "刷新页面可以查看最新内容。",
+		time: formatDateTime(new Date().toISOString()),
 		tags: ["系统"],
 	},
 ];
@@ -27,15 +73,19 @@ export async function fetchEch0Posts(apiUrl: string): Promise<EssayData[]> {
 	try {
 		console.log("Fetching Ech0 posts from:", `${apiUrl}/rss`);
 
-		// 设置超时
+		// 设置更短的超时，确保快速响应
 		const controller = new AbortController();
-		const timeoutId = setTimeout(() => controller.abort(), 10000); // 10秒超时
+		const timeoutId = setTimeout(() => controller.abort(), 3000); // 3秒超时，更快响应
 
 		const response = await fetch(`${apiUrl}/rss`, {
 			signal: controller.signal,
 			headers: {
 				Accept: "application/rss+xml, application/xml, text/xml, */*",
+				'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
 			},
+			// 允许跨域请求
+			mode: 'cors',
+			credentials: 'omit',
 		});
 
 		clearTimeout(timeoutId);
@@ -61,9 +111,41 @@ export async function fetchEch0Posts(apiUrl: string): Promise<EssayData[]> {
 			return fallbackData;
 		}
 
+		// 只在客户端缓存数据
+		if (typeof window !== 'undefined' && window.localStorage) {
+			try {
+				window.localStorage.setItem('ech0PostsCache', JSON.stringify({
+					data,
+					timestamp: Date.now()
+				}));
+			} catch (e) {
+				// 本地存储失败不影响主流程
+				console.warn("Failed to cache Ech0 posts:", e);
+			}
+		}
+
 		return data;
 	} catch (error) {
 		console.error("Error fetching Ech0 posts:", error);
+		
+		// 尝试从缓存获取数据（只在客户端）
+		if (typeof window !== 'undefined' && window.localStorage) {
+			try {
+				const cached = window.localStorage.getItem('ech0PostsCache');
+				if (cached) {
+					const parsed = JSON.parse(cached);
+					// 检查缓存是否在24小时内
+					if (Date.now() - parsed.timestamp < 24 * 60 * 60 * 1000) {
+						console.log("Using cached Ech0 posts");
+						return parsed.data;
+					}
+				}
+			} catch (e) {
+				// 缓存读取失败，继续使用备用数据
+				console.warn("Failed to read cached Ech0 posts:", e);
+			}
+		}
+		
 		// 出错时返回备用数据，避免页面显示空白
 		return fallbackData;
 	}
@@ -103,11 +185,14 @@ function parseRssData(xmlText: string): EssayData[] {
 		// 提取图片
 		const images = extractImages(summary);
 
+		// 提取标签
+		const tags = extractTags(entryText);
+
 		entries.push({
 			id: index,
 			content,
-			time: formatDate(updated),
-			tags: ["生活"], // 默认标签
+			time: formatDateTime(updated),
+			tags: tags.length > 0 ? tags : ["生活"], // 默认标签
 			images: images.length > 0 ? images : undefined,
 		});
 	}
@@ -182,18 +267,23 @@ function extractImages(html: string): string[] {
 	return images;
 }
 
-/**
- * 格式化日期
- * @param dateString ISO日期字符串
- * @returns YYYY-MM-DD格式的日期字符串
- */
-function formatDate(dateString: string): string {
-	if (!dateString) return new Date().toISOString().split("T")[0];
 
-	try {
-		const date = new Date(dateString);
-		return date.toISOString().split("T")[0];
-	} catch {
-		return new Date().toISOString().split("T")[0];
+
+/**
+ * 从RSS条目中提取标签
+ * @param entryText RSS条目文本
+ * @returns 标签数组
+ */
+function extractTags(entryText: string): string[] {
+	const tags: string[] = [];
+	const categoryRegex = /<category[^>]*term=["']([^"']+)["']/gi;
+	let match: RegExpExecArray | null = null;
+
+	while (true) {
+		match = categoryRegex.exec(entryText);
+		if (match === null) break;
+		tags.push(match[1]);
 	}
+
+	return tags;
 }

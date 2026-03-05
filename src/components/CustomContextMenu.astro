@@ -28,8 +28,80 @@
     </button>
   </div>
   
-  <!-- 菜单项 -->
-  <div class="py-1">
+  <!-- 选中文本菜单 -->
+  <div id="text-selection-menu" class="py-1 hidden">
+    <button id="copy-text" class="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-75 hover:text-90 hover:bg-[var(--btn-card-bg-hover)] transition-colors cursor-pointer">
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-[var(--primary)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+      </svg>
+      <span>复制</span>
+    </button>
+    
+    <button id="search-text" class="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-75 hover:text-90 hover:bg-[var(--btn-card-bg-hover)] transition-colors cursor-pointer">
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-[var(--primary)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+      </svg>
+      <span>搜索</span>
+    </button>
+    
+    <button id="translate-text" class="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-75 hover:text-90 hover:bg-[var(--btn-card-bg-hover)] transition-colors cursor-pointer">
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-[var(--primary)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21h2m0 0h5m-5 0h2m-2 4h5m-5 0h2" />
+      </svg>
+      <span>翻译</span>
+    </button>
+  </div>
+  
+  <!-- 链接菜单 -->
+  <div id="link-menu" class="py-1 hidden">
+    <button id="open-link-new" class="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-75 hover:text-90 hover:bg-[var(--btn-card-bg-hover)] transition-colors cursor-pointer">
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-[var(--primary)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+      </svg>
+      <span>在新标签页打开</span>
+    </button>
+    
+    <button id="copy-link" class="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-75 hover:text-90 hover:bg-[var(--btn-card-bg-hover)] transition-colors cursor-pointer">
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-[var(--primary)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+      </svg>
+      <span>复制链接地址</span>
+    </button>
+    
+    <button id="open-link-background" class="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-75 hover:text-90 hover:bg-[var(--btn-card-bg-hover)] transition-colors cursor-pointer">
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-[var(--primary)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z" />
+      </svg>
+      <span>在后台标签页打开</span>
+    </button>
+  </div>
+  
+  <!-- 图片菜单 -->
+  <div id="image-menu" class="py-1 hidden">
+    <button id="view-image" class="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-75 hover:text-90 hover:bg-[var(--btn-card-bg-hover)] transition-colors cursor-pointer">
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-[var(--primary)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+      </svg>
+      <span>查看大图</span>
+    </button>
+    
+    <button id="copy-image-url" class="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-75 hover:text-90 hover:bg-[var(--btn-card-bg-hover)] transition-colors cursor-pointer">
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-[var(--primary)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+      </svg>
+      <span>复制图片地址</span>
+    </button>
+    
+    <button id="save-image" class="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-75 hover:text-90 hover:bg-[var(--btn-card-bg-hover)] transition-colors cursor-pointer">
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-[var(--primary)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+      </svg>
+      <span>保存图片</span>
+    </button>
+  </div>
+  
+  <!-- 普通菜单 -->
+  <div id="normal-menu" class="py-1">
     <a href="/archive/" class="flex items-center gap-3 px-4 py-2.5 text-sm text-75 hover:text-90 hover:bg-[var(--btn-card-bg-hover)] transition-colors cursor-pointer">
       <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-[var(--primary)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
         <path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
@@ -113,16 +185,41 @@
   (function() {
     const menu = document.getElementById('custom-context-menu');
     const toast = document.getElementById('context-menu-toast');
+    const textMenu = document.getElementById('text-selection-menu');
+    const linkMenu = document.getElementById('link-menu');
+    const imageMenu = document.getElementById('image-menu');
+    const normalMenu = document.getElementById('normal-menu');
     let isMenuVisible = false;
     let toastTimeout: number | null = null;
+    let currentTarget: EventTarget | null = null;
     
     // 显示菜单
-    function showMenu(x: number, y: number) {
+    function showMenu(x: number, y: number, context: string) {
       if (!menu) return;
+      
+      // 显示对应菜单
+      textMenu?.classList.add('hidden');
+      linkMenu?.classList.add('hidden');
+      imageMenu?.classList.add('hidden');
+      normalMenu?.classList.add('hidden');
+      
+      switch (context) {
+        case 'text':
+          textMenu?.classList.remove('hidden');
+          break;
+        case 'link':
+          linkMenu?.classList.remove('hidden');
+          break;
+        case 'image':
+          imageMenu?.classList.remove('hidden');
+          break;
+        default:
+          normalMenu?.classList.remove('hidden');
+      }
       
       // 计算菜单位置，确保不超出视口
       const menuWidth = 180;
-      const menuHeight = 320; // 估算高度
+      const menuHeight = menu.offsetHeight;
       const viewportWidth = window.innerWidth;
       const viewportHeight = window.innerHeight;
       
@@ -153,6 +250,7 @@
       if (!menu) return;
       menu.classList.add('hidden');
       isMenuVisible = false;
+      currentTarget = null;
     }
     
     // 显示提示通知
@@ -184,6 +282,27 @@
     // 全局暴露隐藏函数
     (window as any).hideContextMenuToast = hideToast;
     
+    // 检测右键点击的上下文
+    function getContext(e: MouseEvent): string {
+      const selection = window.getSelection();
+      if (selection && selection.toString().trim() !== '') {
+        return 'text';
+      }
+      
+      const target = e.target as HTMLElement;
+      currentTarget = target;
+      
+      if (target.closest('a')) {
+        return 'link';
+      }
+      
+      if (target.tagName === 'IMG') {
+        return 'image';
+      }
+      
+      return 'normal';
+    }
+    
     // 右键事件监听
     document.addEventListener('contextmenu', function(e) {
       // 检查是否按下了 Ctrl 键
@@ -196,8 +315,11 @@
       // 阻止默认右键菜单
       e.preventDefault();
       
+      // 检测上下文
+      const context = getContext(e);
+      
       // 显示自定义菜单
-      showMenu(e.clientX, e.clientY);
+      showMenu(e.clientX, e.clientY, context);
     });
     
     // 点击其他地方隐藏菜单
@@ -226,6 +348,93 @@
       if (e.key === 'Escape' && isMenuVisible) {
         hideMenu();
       }
+    });
+    
+    // 文本菜单事件
+    document.getElementById('copy-text')?.addEventListener('click', function() {
+      const selection = window.getSelection();
+      if (selection) {
+        document.execCommand('copy');
+      }
+      hideMenu();
+    });
+    
+    document.getElementById('search-text')?.addEventListener('click', function() {
+      const selection = window.getSelection();
+      if (selection) {
+        const text = selection.toString().trim();
+        if (text) {
+          window.open(`https://www.google.com/search?q=${encodeURIComponent(text)}`, '_blank');
+        }
+      }
+      hideMenu();
+    });
+    
+    document.getElementById('translate-text')?.addEventListener('click', function() {
+      const selection = window.getSelection();
+      if (selection) {
+        const text = selection.toString().trim();
+        if (text) {
+          window.open(`https://translate.google.com/?text=${encodeURIComponent(text)}`, '_blank');
+        }
+      }
+      hideMenu();
+    });
+    
+    // 链接菜单事件
+    document.getElementById('open-link-new')?.addEventListener('click', function() {
+      const target = currentTarget as HTMLElement;
+      const link = target?.closest('a') as HTMLAnchorElement;
+      if (link) {
+        window.open(link.href, '_blank');
+      }
+      hideMenu();
+    });
+    
+    document.getElementById('copy-link')?.addEventListener('click', function() {
+      const target = currentTarget as HTMLElement;
+      const link = target?.closest('a') as HTMLAnchorElement;
+      if (link) {
+        navigator.clipboard.writeText(link.href);
+      }
+      hideMenu();
+    });
+    
+    document.getElementById('open-link-background')?.addEventListener('click', function() {
+      const target = currentTarget as HTMLElement;
+      const link = target?.closest('a') as HTMLAnchorElement;
+      if (link) {
+        window.open(link.href, '_blank', 'noopener,noreferrer');
+      }
+      hideMenu();
+    });
+    
+    // 图片菜单事件
+    document.getElementById('view-image')?.addEventListener('click', function() {
+      const target = currentTarget as HTMLImageElement;
+      if (target && target.tagName === 'IMG') {
+        window.open(target.src, '_blank');
+      }
+      hideMenu();
+    });
+    
+    document.getElementById('copy-image-url')?.addEventListener('click', function() {
+      const target = currentTarget as HTMLImageElement;
+      if (target && target.tagName === 'IMG') {
+        navigator.clipboard.writeText(target.src);
+      }
+      hideMenu();
+    });
+    
+    document.getElementById('save-image')?.addEventListener('click', function() {
+      const target = currentTarget as HTMLImageElement;
+      if (target && target.tagName === 'IMG') {
+        const link = document.createElement('a');
+        link.href = target.src;
+        link.download = target.alt || 'image';
+        link.click();
+      }
+      hideMenu();
     });
     
     // 繁简切换功能
