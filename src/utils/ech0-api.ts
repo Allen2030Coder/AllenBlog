@@ -67,15 +67,53 @@ export const fallbackData: EssayData[] = [
 /**
  * 从Ech0 RSS获取动态数据
  * @param apiUrl Ech0 API地址
+ * @param isBuild 是否为构建环境
  * @returns 转换后的动态数据数组
  */
-export async function fetchEch0Posts(apiUrl: string): Promise<EssayData[]> {
+export async function fetchEch0Posts(apiUrl: string, isBuild: boolean = false): Promise<EssayData[]> {
+	// 构建环境使用静态数据，避免API请求超时
+	if (isBuild) {
+		console.log("Using static Ech0 data for build");
+		return [
+			{
+				id: 1,
+				content: "欢迎来到我的说说页面！",
+				time: "2026-03-10 10:00",
+				tags: ["生活"],
+			},
+			{
+				id: 2,
+				content: "这里记录了我的日常分享和思考。",
+				time: "2026-03-09 15:30",
+				tags: ["生活"],
+			},
+			{
+				id: 3,
+				content: "今天天气不错，出去散步了。",
+				time: "2026-03-08 09:15",
+				tags: ["生活"],
+			},
+			{
+				id: 4,
+				content: "学习了一些新的技术知识。",
+				time: "2026-03-07 14:45",
+				tags: ["技术"],
+			},
+			{
+				id: 5,
+				content: "分享一个有趣的项目。",
+				time: "2026-03-06 11:20",
+				tags: ["分享"],
+			},
+		];
+	}
+
 	try {
 		console.log("Fetching Ech0 posts from:", `${apiUrl}/rss`);
 
 		// 设置更短的超时，确保快速响应
 		const controller = new AbortController();
-		const timeoutId = setTimeout(() => controller.abort(), 3000); // 3秒超时，更快响应
+		const timeoutId = setTimeout(() => controller.abort(), 2000); // 2秒超时，更快响应
 
 		const response = await fetch(`${apiUrl}/rss`, {
 			signal: controller.signal,

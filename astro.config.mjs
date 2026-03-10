@@ -32,6 +32,40 @@ export default defineConfig({
 	site: "https://blog.fis.ink/",
 	base: "/",
 	trailingSlash: "always",
+	
+	// 性能优化配置
+	image: {
+		remotePatterns: [
+			{
+				host: "image.allen2030.com",
+				protocol: "https",
+			},
+			{
+				host: "say.allen2030.com",
+				protocol: "https",
+			},
+			{
+				host: "blogpng.fishcpy.top",
+				protocol: "https",
+			},
+		],
+		// 图片格式优化
+		formats: ['webp', 'avif', 'png'],
+		// 图片质量优化
+		quality: 85,
+		// 缓存配置
+		cacheDir: './node_modules/.astro/image-cache',
+		// 允许使用远程图片
+		allowUpscale: false,
+	},
+	
+	// 构建优化
+	build: {
+		// 启用代码分割
+		split: true,
+		// 资产输出目录
+		assets: 'assets',
+	},
 
 	integrations: [
 		tailwind({
@@ -177,27 +211,142 @@ export default defineConfig({
 		build: {
 			cssCodeSplit: true,
 			minify: 'esbuild',
-			rollupOptions: {
+			esbuild: {
+				minify: true,
+				minifyIdentifiers: true,
+				minifySyntax: true,
+				minifyWhitespace: true,
+				// 移除控制台输出
+				drop: ['console', 'debugger'],
+			},
+			terserOptions: {
+				compress: {
+					drop_console: true,
+					drop_debugger: true,
+					dead_code: true,
+					unused: true,
+					collapse_vars: true,
+					reduce_vars: true,
+					// 更多压缩选项
+					booleans: true,
+					if_return: true,
+					join_vars: true,
+					loops: true,
+					conditionals: true,
+				},
+				mangle: true,
 				output: {
+					comments: false,
+					beautify: false,
+				},
+			},
+			// 构建性能优化
+			cache: true,
+			// 输出目录
+			outDir: 'dist',
+			// 资源目录
+			assetsDir: 'assets',
+			// 生成 sourcemap
+			sourcemap: false,
+			// 清空输出目录
+			emptyOutDir: true,
+			rollupOptions: {
+				// 输入配置
+				input: {},
+				// 输出配置
+				output: {
+					// 代码分割策略
 					manualChunks: {
 						'vendor': ['svelte'],
 						'icons': ['@iconify/svelte'],
+						'photoswipe': ['photoswipe'],
+						'expressive-code': ['@expressive-code/core'],
+						'katex': ['katex'],
+						'markdown-it': ['markdown-it'],
+						// 新增：将大型依赖单独打包
+						'overlayscrollbars': ['overlayscrollbars'],
+						'sanitize-html': ['sanitize-html'],
 					},
+					// 压缩输出
+					compact: true,
+					// 文件名哈希
+					chunkFileNames: 'assets/chunk-[hash].js',
+					entryFileNames: 'assets/entry-[hash].js',
+					assetFileNames: 'assets/[hash].[ext]',
 				},
 				onwarn(warning, warn) {
-					// temporarily suppress this warning
+					// 暂时抑制某些警告
 					if (
 						warning.message.includes("is dynamically imported by") &&
 						warning.message.includes("but also statically imported by")
 					) {
 						return;
 					}
+					// 抑制未使用的导入警告
+					if (warning.code === 'UNUSED_EXTERNAL_IMPORT') {
+						return;
+					}
 					warn(warning);
 				},
 			},
 		},
+		// 依赖优化
+		optimizeDeps: {
+			enable: true,
+			include: ['svelte', '@iconify/svelte', 'photoswipe', 'katex', 'markdown-it', 'overlayscrollbars', 'sanitize-html'],
+			force: true,
+			// 缓存目录
+			cacheDir: './node_modules/.vite',
+		},
+		// SSR 配置
 		ssr: {
 			noExternal: ['@iconify/svelte'],
+			// SSR 外部化
+			external: [],
+		},
+		// 开发服务器优化
+		server: {
+			https: false,
+			port: 4321,
+			open: false,
+			// 开发服务器缓存
+			cacheDir: './node_modules/.vite',
+			// 增加 watch 上限
+			watch: {
+				ignored: ['**/node_modules/**', '**/dist/**'],
+				usePolling: false,
+			},
+		},
+		// 预加载策略
+		preview: {
+			port: 4321,
+			https: false,
+		},
+		// 模块解析优化
+		resolve: {
+			// 别名配置
+			alias: {
+				'@': '/src',
+				'@components': '/src/components',
+				'@utils': '/src/utils',
+				'@styles': '/src/styles',
+				'@pages': '/src/pages',
+				'@layouts': '/src/layouts',
+				'@content': '/src/content',
+				'@assets': '/src/assets',
+				'@constants': '/src/constants',
+				'@i18n': '/src/i18n',
+				'@plugins': '/src/plugins',
+				'@types': '/src/types',
+			},
+			// 扩展
+			extensions: ['.js', '.jsx', '.ts', '.tsx', '.mjs', '.mts', '.astro', '.svelte'],
+		},
+		// 性能优化
+		performance: {
+			hints: 'warning',
+			maxAssetSize: 250000,
+			maxEntrypointSize: 250000,
 		},
 	},
 

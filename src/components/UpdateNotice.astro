@@ -1,33 +1,11 @@
 ---
-import { getCollection } from "astro:content";
 // 更新公告弹窗组件
 import { Icon } from "astro-icon/components";
 
-// 获取更新公告
-let noticeTitle = "网站更新公告";
-let noticeDate = "2026-02-28";
-let noticeBody =
-	"🎉 网站功能更新\n\n- 新增自定义右键菜单功能\n- 优化文章加密 UI 设计\n- 添加分类和标签页面\n- 改进说说界面瀑布流布局";
-
-try {
-	const notices = await getCollection("notice");
-	if (notices && notices.length > 0) {
-		const sortedNotices = notices.sort((a, b) => {
-			const dateA = new Date(a.data.date || 0);
-			const dateB = new Date(b.data.date || 0);
-			return dateB.getTime() - dateA.getTime();
-		});
-
-		if (sortedNotices.length > 0) {
-			const latest = sortedNotices[0];
-			noticeTitle = latest.data.title || noticeTitle;
-			noticeDate = latest.data.date || noticeDate;
-			noticeBody = latest.body || noticeBody;
-		}
-	}
-} catch (e) {
-	console.log("Using default notice content");
-}
+// 静态更新公告数据
+const noticeTitle = "网站更新公告";
+const noticeDate = "2026-02-28";
+const noticeBody = "🎉 网站功能更新\n\n- 新增自定义右键菜单功能\n- 优化文章加密 UI 设计\n- 添加分类和标签页面\n- 改进说说界面瀑布流布局";
 
 const noticeId = `notice-${noticeDate}-${noticeTitle}`;
 

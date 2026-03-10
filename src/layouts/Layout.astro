@@ -4,9 +4,7 @@ import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
 
 import ConfigCarrier from "@components/ConfigCarrier.astro";
-import CustomContextMenu from "@components/CustomContextMenu.astro";
 import TitleBeautify from "@components/TitleBeautify.astro";
-import UpdateNotice from "@components/UpdateNotice.astro";
 import { cardConfig, cursorConfig, profileConfig, siteConfig } from "@/config";
 import {
 	AUTO_MODE,
@@ -120,11 +118,29 @@ const backgroundStyle = pageBackgroundConfig.enable
 		<meta name="generator" content={Astro.generator} />
 		{favicons.map(favicon => (
 			<link rel="icon"
-				  href={favicon.src.startsWith('/') ? url(favicon.src) : favicon.src}
-				  sizes={favicon.sizes}
-				  media={favicon.theme && `(prefers-color-scheme: ${favicon.theme})`}
+			  href={favicon.src.startsWith('/') ? url(favicon.src) : favicon.src}
+			  sizes={favicon.sizes}
+			  media={favicon.theme && `(prefers-color-scheme: ${favicon.theme})`}
 			/>
 		))}
+
+		<!-- 资源预连接 -->
+		<link rel="preconnect" href="https://cdn.xrbk.cn" crossorigin>
+		<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+		<link rel="preconnect" href="https://um.fis.ink" crossorigin>
+		<link rel="preconnect" href="https://say.allen2030.com" crossorigin>
+		<link rel="preconnect" href="https://image.allen2030.com" crossorigin>
+		<link rel="preconnect" href="https://blogpng.fishcpy.top" crossorigin>
+
+		<!-- 预加载关键资源 -->
+		<link rel="preload" href="https://cdn.xrbk.cn/fonts/ChillRoundFRegular/ChillRoundFRegular.woff2" as="font" type="font/woff2" crossorigin>
+		<link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" as="style">
+
+		<!-- 预取资源 -->
+		<link rel="prefetch" href="/archive/" as="document">
+		<link rel="prefetch" href="/categories/" as="document">
+		<link rel="prefetch" href="/tags/" as="document">
+		<link rel="prefetch" href="/essay/" as="document">
 
 		<!-- Set the theme before the page is rendered to avoid a flash -->
 		<script is:inline define:vars={{DEFAULT_THEME, LIGHT_MODE, DARK_MODE, AUTO_MODE, BANNER_HEIGHT_EXTEND, PAGE_WIDTH, configHue, configTheme: siteConfig.theme}}>
@@ -246,11 +262,16 @@ const backgroundStyle = pageBackgroundConfig.enable
 		<!-- increase the page height during page transition to prevent the scrolling animation from jumping -->
 		<div id="page-height-extend" class="hidden h-[300vh]"></div>
 
-		<!-- 自定义右键菜单 -->
-		<CustomContextMenu />
-
-		<!-- 更新公告弹窗 -->
-		<UpdateNotice />
+		<!-- 懒加载组件 -->
+		<script>
+			// 懒加载自定义右键菜单
+			if (window.innerWidth > 768) {
+				import('@components/CustomContextMenu.astro');
+			}
+			
+			// 懒加载更新公告
+			import('@components/UpdateNotice.astro');
+		</script>
 	</body>
 </html>
 
