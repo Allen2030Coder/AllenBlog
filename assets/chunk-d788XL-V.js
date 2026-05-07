@@ -1,0 +1,481 @@
+import'./chunk-BBKQStYD.js';import {c as createComponent,a as renderTemplate,r as renderComponent,m as maybeRenderHead,d as addAttribute}from'./chunk-Div6EpxG.js';import {f as fetchEch0Posts,c as fallbackData,$ as $$MainGridLayout,a as $$Icon,b as $$Index}from'./chunk-BqqG3N9l.js';import {p as profileConfig}from'./chunk-Dz7Rnveg.js';/* empty css              */var __freeze = Object.freeze;
+var __defProp = Object.defineProperty;
+var __template = (cooked, raw) => __freeze(__defProp(cooked, "raw", { value: __freeze(raw || cooked.slice()) }));
+var _a;
+const $$Essay = createComponent(async ($$result, $$props, $$slots) => {
+  const isBuild = true;
+  let essays = await fetchEch0Posts("https://say.allen2030.com", isBuild);
+  const isUsingFallback = essays.length === 3 && essays[0].content === "欢迎来到我的说说页面！";
+  const needsClientFetch = isUsingFallback;
+  if (essays.length === 0) {
+    essays = fallbackData;
+    needsClientFetch = true;
+  }
+  const processedEssays = essays.map((essay) => {
+    const hashTags = essay.content.match(/#[^\s#]+/g) || [];
+    const cleanHashTags = hashTags.map((tag) => tag.replace("#", ""));
+    const allTags = [...cleanHashTags, ...essay.tags || []];
+    const uniqueTags = [...new Set(allTags)].slice(0, 3);
+    const cleanContent = essay.content.replace(/#[^\s#]+/g, "").trim();
+    return {
+      ...essay,
+      cleanContent,
+      displayTags: uniqueTags,
+      hasTags: uniqueTags.length > 0
+    };
+  });
+  return renderTemplate(_a || (_a = __template(["", `  <script type="module">
+    // 扩展Window接口
+    declare global {
+        interface Window {
+            commentOnPost: (button: HTMLButtonElement) => void;
+        }
+    }
+
+    // 全局评论函数
+    window.commentOnPost = function(button: HTMLButtonElement) {
+        const content = button.dataset.content;
+        
+        // 滚动到评论区
+        const commentsSection = document.getElementById('comments-section');
+        if (commentsSection) {
+            commentsSection.scrollIntoView({ behavior: 'smooth' });
+        } else {
+            window.scrollTo({ 
+                top: document.body.scrollHeight, 
+                behavior: 'smooth' 
+            });
+        }
+        
+        // 增加延迟时间，确保滚动完成且Twikoo完全加载
+        setTimeout(() => {
+            // 尝试找到Twikoo输入框
+            const textarea = document.querySelector('.el-textarea__inner') as HTMLTextAreaElement | null || 
+                           document.querySelector('#twikoo textarea') as HTMLTextAreaElement | null || 
+                           document.querySelector('textarea') as HTMLTextAreaElement | null;
+            
+            if (textarea && content) {
+                // 填充引用内容
+                textarea.value = \`> \${content}\\n\\n\`;
+                // 聚焦输入框
+                textarea.focus();
+                // 触发输入事件
+                textarea.dispatchEvent(new Event('input', { bubbles: true }));
+            } else {
+                // 再次尝试
+                setTimeout(() => {
+                    const retryTextarea = document.querySelector('.el-textarea__inner') as HTMLTextAreaElement | null || 
+                                         document.querySelector('textarea') as HTMLTextAreaElement | null;
+                    if (retryTextarea && content) {
+                        retryTextarea.value = \`> \${content}\\n\\n\`;
+                        retryTextarea.focus();
+                        retryTextarea.dispatchEvent(new Event('input', { bubbles: true }));
+                    }
+                }, 500);
+            }
+        }, 800);
+    };
+
+    // 懒加载 ech0-api 模块
+    async function loadEch0Api() {
+        try {
+            const { fetchEch0Posts, fallbackData } = await import('../utils/ech0-api.ts');
+            return { fetchEch0Posts, fallbackData };
+        } catch (error) {
+            console.error('Failed to load ech0-api:', error);
+            return null;
+        }
+    }
+
+    // 客户端获取Ech0数据（作为服务器端获取失败的备用方案）
+    async function fetchEch0PostsClient() {
+        const container = document.getElementById('essays-container');
+        if (!container || container.dataset.needsFetch !== 'true') {
+            return; // 不需要客户端获取
+        }
+
+        try {
+            // 加载 ech0-api 模块
+            const ech0Api = await loadEch0Api();
+            if (!ech0Api) {
+                throw new Error('Failed to load ech0-api module');
+            }
+
+            const { fetchEch0Posts } = ech0Api;
+            
+            // 使用统一的 fetchEch0Posts 函数
+            const essays = await fetchEch0Posts('https://say.allen2030.com', false);
+            
+            if (essays && essays.length > 0) {
+                // 重新渲染说说列表
+                renderEssays(essays);
+            }
+        } catch (error) {
+            console.error('Client-side fetch error:', error);
+        }
+    }
+
+    // 渲染说说列表
+    function renderEssays(essays: any[]) {
+        const container = document.getElementById('essays-container');
+        if (!container) return;
+        
+        // 获取头像和用户名
+        const avatarImg = document.querySelector('.essay-item img') as HTMLImageElement | null;
+        const userNameEl = document.querySelector('.essay-item .font-medium') as HTMLElement | null;
+        const avatar = avatarImg ? avatarImg.src : '/favicon/favicon-light-128.png';
+        const userName = userNameEl ? userNameEl.textContent : 'Allen';
+        
+        // 处理每条说说数据，提取#标签
+        const processedEssays = essays.map(essay => {
+            // 从内容中提取#标签
+            const hashTags = essay.content.match(/#[^\\s#]+/g) || [];
+            const cleanHashTags = hashTags.map((tag: string) => tag.replace('#', ''));
+            
+            // 合并标签并去重
+            const allTags = [...cleanHashTags, ...(essay.tags || [])];
+            const uniqueTags = [...new Set(allTags)].slice(0, 3);
+            
+            // 过滤掉内容中的#标签
+            const cleanContent = essay.content.replace(/#[^\\s#]+/g, '').trim();
+            
+            return {
+                ...essay,
+                cleanContent,
+                displayTags: uniqueTags,
+                hasTags: uniqueTags.length > 0
+            };
+        });
+        
+        const html = processedEssays.map((essay, index) => {
+            const imagesHtml = essay.images && essay.images.length > 0 ? \`
+                <div class="essay-images mb-3">
+                    <div class="grid gap-2 \${essay.images.length === 1 ? 'grid-cols-1' : 'grid-cols-2'}">
+                        \${essay.images.slice(0, 4).map((image: string, idx: number) => \`
+                            <div class="rounded-lg overflow-hidden bg-[var(--btn-card-bg-hover)] aspect-video">
+                                <img 
+                                    src="\${image}" 
+                                    alt="瞬间图片 \${idx + 1}"
+                                    class="w-full h-full object-cover hover:scale-105 transition-transform duration-300 cursor-pointer"
+                                    loading="lazy"
+                                />
+                            </div>
+                        \`).join('')}
+                    </div>
+                </div>
+            \` : '';
+            
+            const tagsHtml = essay.hasTags 
+                ? essay.displayTags.map((tag: string) => \`<span class="px-2 py-1 bg-[var(--btn-card-bg-hover)] rounded-md text-xs text-75">\${tag}</span>\`).join('')
+                : \`<span class="px-2 py-1 bg-[var(--btn-card-bg-hover)] rounded-md text-xs text-50">无标签</span>\`;
+            
+            return \`
+                <div class="essay-item break-inside-avoid bg-[var(--card-bg)] rounded-xl p-4 shadow-sm border border-[var(--line-divider)] transition-all hover:shadow-md" style="animation-delay: \${index * 0.1}s">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="w-10 h-10 rounded-full overflow-hidden bg-[var(--btn-card-bg-hover)] flex-shrink-0">
+                            <img 
+                                src="\${avatar}" 
+                                alt="\${userName}"
+                                class="w-full h-full object-cover"
+                            />
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center gap-1">
+                                <span class="font-medium text-90 text-sm truncate">\${userName}</span>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-blue-500 flex-shrink-0" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+                                </svg>
+                            </div>
+                            <div class="text-xs text-50">\${essay.time}</div>
+                        </div>
+                    </div>
+                    
+                    <div class="essay-content text-90 text-sm leading-relaxed mb-3 whitespace-pre-wrap">
+                        \${essay.cleanContent}
+                    </div>
+                    
+                    \${imagesHtml}
+                    
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-1 flex-wrap">
+                            \${tagsHtml}
+                        </div>
+                        
+                        <button 
+                            class="flex items-center gap-1 text-xs text-75 hover:text-primary transition-colors p-1 rounded hover:bg-[var(--btn-card-bg-hover)]"
+                            data-content="\${essay.content.replace(/"/g, '&quot;')}"
+                            onclick="window.commentOnPost(this)"
+                        >
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            \`;
+        }).join('');
+        
+        // 添加淡入效果
+        container.style.opacity = '0';
+        container.style.transition = 'opacity 0.3s ease';
+        
+        container.innerHTML = html;
+        
+        // 触发重排后设置不透明度
+        requestAnimationFrame(() => {
+            container.style.opacity = '1';
+        });
+    }
+
+    // 防抖函数
+    function debounce(func: Function, wait: number) {
+        let timeout: number | null = null;
+        return function(...args: any[]) {
+            if (timeout) clearTimeout(timeout);
+            timeout = window.setTimeout(() => {
+                func.apply(this, args);
+            }, wait);
+        };
+    }
+
+    // 防抖处理的获取函数
+    const debouncedFetch = debounce(fetchEch0PostsClient, 300);
+
+    // 立即执行获取（不等待DOMContentLoaded）
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', debouncedFetch);
+    } else {
+        debouncedFetch();
+    }
+</script>`], ["", `  <script type="module">
+    // 扩展Window接口
+    declare global {
+        interface Window {
+            commentOnPost: (button: HTMLButtonElement) => void;
+        }
+    }
+
+    // 全局评论函数
+    window.commentOnPost = function(button: HTMLButtonElement) {
+        const content = button.dataset.content;
+        
+        // 滚动到评论区
+        const commentsSection = document.getElementById('comments-section');
+        if (commentsSection) {
+            commentsSection.scrollIntoView({ behavior: 'smooth' });
+        } else {
+            window.scrollTo({ 
+                top: document.body.scrollHeight, 
+                behavior: 'smooth' 
+            });
+        }
+        
+        // 增加延迟时间，确保滚动完成且Twikoo完全加载
+        setTimeout(() => {
+            // 尝试找到Twikoo输入框
+            const textarea = document.querySelector('.el-textarea__inner') as HTMLTextAreaElement | null || 
+                           document.querySelector('#twikoo textarea') as HTMLTextAreaElement | null || 
+                           document.querySelector('textarea') as HTMLTextAreaElement | null;
+            
+            if (textarea && content) {
+                // 填充引用内容
+                textarea.value = \\\`> \\\${content}\\\\n\\\\n\\\`;
+                // 聚焦输入框
+                textarea.focus();
+                // 触发输入事件
+                textarea.dispatchEvent(new Event('input', { bubbles: true }));
+            } else {
+                // 再次尝试
+                setTimeout(() => {
+                    const retryTextarea = document.querySelector('.el-textarea__inner') as HTMLTextAreaElement | null || 
+                                         document.querySelector('textarea') as HTMLTextAreaElement | null;
+                    if (retryTextarea && content) {
+                        retryTextarea.value = \\\`> \\\${content}\\\\n\\\\n\\\`;
+                        retryTextarea.focus();
+                        retryTextarea.dispatchEvent(new Event('input', { bubbles: true }));
+                    }
+                }, 500);
+            }
+        }, 800);
+    };
+
+    // 懒加载 ech0-api 模块
+    async function loadEch0Api() {
+        try {
+            const { fetchEch0Posts, fallbackData } = await import('../utils/ech0-api.ts');
+            return { fetchEch0Posts, fallbackData };
+        } catch (error) {
+            console.error('Failed to load ech0-api:', error);
+            return null;
+        }
+    }
+
+    // 客户端获取Ech0数据（作为服务器端获取失败的备用方案）
+    async function fetchEch0PostsClient() {
+        const container = document.getElementById('essays-container');
+        if (!container || container.dataset.needsFetch !== 'true') {
+            return; // 不需要客户端获取
+        }
+
+        try {
+            // 加载 ech0-api 模块
+            const ech0Api = await loadEch0Api();
+            if (!ech0Api) {
+                throw new Error('Failed to load ech0-api module');
+            }
+
+            const { fetchEch0Posts } = ech0Api;
+            
+            // 使用统一的 fetchEch0Posts 函数
+            const essays = await fetchEch0Posts('https://say.allen2030.com', false);
+            
+            if (essays && essays.length > 0) {
+                // 重新渲染说说列表
+                renderEssays(essays);
+            }
+        } catch (error) {
+            console.error('Client-side fetch error:', error);
+        }
+    }
+
+    // 渲染说说列表
+    function renderEssays(essays: any[]) {
+        const container = document.getElementById('essays-container');
+        if (!container) return;
+        
+        // 获取头像和用户名
+        const avatarImg = document.querySelector('.essay-item img') as HTMLImageElement | null;
+        const userNameEl = document.querySelector('.essay-item .font-medium') as HTMLElement | null;
+        const avatar = avatarImg ? avatarImg.src : '/favicon/favicon-light-128.png';
+        const userName = userNameEl ? userNameEl.textContent : 'Allen';
+        
+        // 处理每条说说数据，提取#标签
+        const processedEssays = essays.map(essay => {
+            // 从内容中提取#标签
+            const hashTags = essay.content.match(/#[^\\\\s#]+/g) || [];
+            const cleanHashTags = hashTags.map((tag: string) => tag.replace('#', ''));
+            
+            // 合并标签并去重
+            const allTags = [...cleanHashTags, ...(essay.tags || [])];
+            const uniqueTags = [...new Set(allTags)].slice(0, 3);
+            
+            // 过滤掉内容中的#标签
+            const cleanContent = essay.content.replace(/#[^\\\\s#]+/g, '').trim();
+            
+            return {
+                ...essay,
+                cleanContent,
+                displayTags: uniqueTags,
+                hasTags: uniqueTags.length > 0
+            };
+        });
+        
+        const html = processedEssays.map((essay, index) => {
+            const imagesHtml = essay.images && essay.images.length > 0 ? \\\`
+                <div class="essay-images mb-3">
+                    <div class="grid gap-2 \\\${essay.images.length === 1 ? 'grid-cols-1' : 'grid-cols-2'}">
+                        \\\${essay.images.slice(0, 4).map((image: string, idx: number) => \\\`
+                            <div class="rounded-lg overflow-hidden bg-[var(--btn-card-bg-hover)] aspect-video">
+                                <img 
+                                    src="\\\${image}" 
+                                    alt="瞬间图片 \\\${idx + 1}"
+                                    class="w-full h-full object-cover hover:scale-105 transition-transform duration-300 cursor-pointer"
+                                    loading="lazy"
+                                />
+                            </div>
+                        \\\`).join('')}
+                    </div>
+                </div>
+            \\\` : '';
+            
+            const tagsHtml = essay.hasTags 
+                ? essay.displayTags.map((tag: string) => \\\`<span class="px-2 py-1 bg-[var(--btn-card-bg-hover)] rounded-md text-xs text-75">\\\${tag}</span>\\\`).join('')
+                : \\\`<span class="px-2 py-1 bg-[var(--btn-card-bg-hover)] rounded-md text-xs text-50">无标签</span>\\\`;
+            
+            return \\\`
+                <div class="essay-item break-inside-avoid bg-[var(--card-bg)] rounded-xl p-4 shadow-sm border border-[var(--line-divider)] transition-all hover:shadow-md" style="animation-delay: \\\${index * 0.1}s">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="w-10 h-10 rounded-full overflow-hidden bg-[var(--btn-card-bg-hover)] flex-shrink-0">
+                            <img 
+                                src="\\\${avatar}" 
+                                alt="\\\${userName}"
+                                class="w-full h-full object-cover"
+                            />
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center gap-1">
+                                <span class="font-medium text-90 text-sm truncate">\\\${userName}</span>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-blue-500 flex-shrink-0" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+                                </svg>
+                            </div>
+                            <div class="text-xs text-50">\\\${essay.time}</div>
+                        </div>
+                    </div>
+                    
+                    <div class="essay-content text-90 text-sm leading-relaxed mb-3 whitespace-pre-wrap">
+                        \\\${essay.cleanContent}
+                    </div>
+                    
+                    \\\${imagesHtml}
+                    
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-1 flex-wrap">
+                            \\\${tagsHtml}
+                        </div>
+                        
+                        <button 
+                            class="flex items-center gap-1 text-xs text-75 hover:text-primary transition-colors p-1 rounded hover:bg-[var(--btn-card-bg-hover)]"
+                            data-content="\\\${essay.content.replace(/"/g, '&quot;')}"
+                            onclick="window.commentOnPost(this)"
+                        >
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            \\\`;
+        }).join('');
+        
+        // 添加淡入效果
+        container.style.opacity = '0';
+        container.style.transition = 'opacity 0.3s ease';
+        
+        container.innerHTML = html;
+        
+        // 触发重排后设置不透明度
+        requestAnimationFrame(() => {
+            container.style.opacity = '1';
+        });
+    }
+
+    // 防抖函数
+    function debounce(func: Function, wait: number) {
+        let timeout: number | null = null;
+        return function(...args: any[]) {
+            if (timeout) clearTimeout(timeout);
+            timeout = window.setTimeout(() => {
+                func.apply(this, args);
+            }, wait);
+        };
+    }
+
+    // 防抖处理的获取函数
+    const debouncedFetch = debounce(fetchEch0PostsClient, 300);
+
+    // 立即执行获取（不等待DOMContentLoaded）
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', debouncedFetch);
+    } else {
+        debouncedFetch();
+    }
+</script>`])), renderComponent($$result, "MainGridLayout", $$MainGridLayout, { "title": "瞬间", "description": "记录生活中的美好瞬间", "data-astro-cid-6rfjdx6s": true }, { "default": async ($$result2) => renderTemplate` ${maybeRenderHead()}<div class="flex w-full rounded-[var(--radius-large)] overflow-hidden relative min-h-32" data-astro-cid-6rfjdx6s> <div class="card-base z-10 px-6 md:px-9 py-6 relative w-full" data-astro-cid-6rfjdx6s> <h1 class="text-4xl font-bold mb-6 text-neutral-900 dark:text-white" data-astro-cid-6rfjdx6s>说说</h1> <div id="essays-container" class="columns-1 md:columns-2 lg:columns-3 gap-4 space-y-4"${addAttribute(needsClientFetch ? "true" : "false", "data-needs-fetch")} data-astro-cid-6rfjdx6s> ${processedEssays.map((essay) => renderTemplate`<div class="essay-item break-inside-avoid bg-[var(--card-bg)] rounded-xl p-4 shadow-sm border border-[var(--line-divider)] transition-all hover:shadow-md" data-astro-cid-6rfjdx6s> <!-- 顶部：头像、用户名、时间 --> <div class="flex items-center gap-3 mb-3" data-astro-cid-6rfjdx6s> <div class="w-10 h-10 rounded-full overflow-hidden bg-[var(--btn-card-bg-hover)] flex-shrink-0" data-astro-cid-6rfjdx6s> <img${addAttribute(profileConfig.avatar, "src")}${addAttribute(profileConfig.name, "alt")} class="w-full h-full object-cover" data-astro-cid-6rfjdx6s> </div> <div class="flex-1 min-w-0" data-astro-cid-6rfjdx6s> <div class="flex items-center gap-1" data-astro-cid-6rfjdx6s> <span class="font-medium text-90 text-sm truncate" data-astro-cid-6rfjdx6s>${profileConfig.name}</span> ${renderComponent($$result2, "Icon", $$Icon, { "name": "material-symbols:verified-rounded", "class": "w-4 h-4 text-blue-500 flex-shrink-0", "data-astro-cid-6rfjdx6s": true })} </div> <div class="text-xs text-50" data-astro-cid-6rfjdx6s>${essay.time}</div> </div> </div> <!-- 内容（已过滤#标签） --> <div class="essay-content text-90 text-sm leading-relaxed mb-3 whitespace-pre-wrap" data-astro-cid-6rfjdx6s> ${essay.cleanContent} </div> <!-- 图片 --> ${essay.images && essay.images.length > 0 && renderTemplate`<div class="essay-images mb-3" data-astro-cid-6rfjdx6s> <div${addAttribute([
+    "grid gap-2",
+    essay.images.length === 1 ? "grid-cols-1" : essay.images.length === 2 ? "grid-cols-2" : "grid-cols-2"
+  ], "class:list")} data-astro-cid-6rfjdx6s> ${essay.images.slice(0, 4).map((image, index) => renderTemplate`<div class="rounded-lg overflow-hidden bg-[var(--btn-card-bg-hover)] aspect-video" data-astro-cid-6rfjdx6s> <img${addAttribute(image, "src")}${addAttribute(`瞬间图片 ${index + 1}`, "alt")} class="w-full h-full object-cover hover:scale-105 transition-transform duration-300 cursor-pointer" loading="lazy" data-astro-cid-6rfjdx6s> </div>`)} </div> </div>`} <!-- 底部标签 --> <div class="flex items-center justify-between" data-astro-cid-6rfjdx6s> <div class="flex items-center gap-1 flex-wrap" data-astro-cid-6rfjdx6s> ${essay.hasTags ? essay.displayTags.map((tag) => renderTemplate`<span class="px-2 py-1 bg-[var(--btn-card-bg-hover)] rounded-md text-xs text-75" data-astro-cid-6rfjdx6s> ${tag} </span>`) : renderTemplate`<span class="px-2 py-1 bg-[var(--btn-card-bg-hover)] rounded-md text-xs text-50" data-astro-cid-6rfjdx6s>
+无标签
+</span>`} </div> <!-- 评论按钮 --> <button class="flex items-center gap-1 text-xs text-75 hover:text-primary transition-colors p-1 rounded hover:bg-[var(--btn-card-bg-hover)]"${addAttribute(`${essay.content}`, "data-content")} onclick="window.commentOnPost(this)" data-astro-cid-6rfjdx6s> ${renderComponent($$result2, "Icon", $$Icon, { "name": "material-symbols:chat-bubble-outline-rounded", "class": "w-4 h-4", "data-astro-cid-6rfjdx6s": true })} </button> </div> </div>`)} </div> </div> </div>  <div id="comments-section" class="twikoo-container mt-8" data-astro-cid-6rfjdx6s> ${renderComponent($$result2, "Comment", $$Index, { "path": "/essay/", "data-astro-cid-6rfjdx6s": true })} </div> ` }));
+}, "/home/runner/work/AllenBlog/AllenBlog/src/pages/essay.astro", void 0);
+const $$file = "/home/runner/work/AllenBlog/AllenBlog/src/pages/essay.astro";
+const $$url = "/essay/";const _page=/*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({__proto__:null,default:$$Essay,file:$$file,url:$$url},Symbol.toStringTag,{value:'Module'}));export{_page as _};

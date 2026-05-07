@@ -1,0 +1,1 @@
+const fontwx = "/assets/CfR8s_np.woff2";export{fontwx as default};

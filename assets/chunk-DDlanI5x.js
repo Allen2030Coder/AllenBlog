@@ -1,0 +1,11 @@
+import {c as createComponent,m as maybeRenderHead,d as addAttribute,r as renderComponent,a as renderTemplate,b as createAstro}from'./chunk-Div6EpxG.js';import {a as $$Icon}from'./chunk-BqqG3N9l.js';import {p as profileConfig,e as licenseConfig,i as i18n,I as I18nKey}from'./chunk-Dz7Rnveg.js';import {formatDateToYYYYMMDD}from'./chunk-DACAHu4N.js';const $$Astro = createAstro("https://blog.fis.ink/");
+const $$License = createComponent(($$result, $$props, $$slots) => {
+  const Astro2 = $$result.createAstro($$Astro, $$props, $$slots);
+  Astro2.self = $$License;
+  const { title, pubDate } = Astro2.props;
+  const className = Astro2.props.class;
+  const profileConf = profileConfig;
+  const licenseConf = licenseConfig;
+  const postUrl = decodeURIComponent(Astro2.url.toString());
+  return renderTemplate`${maybeRenderHead()}<div${addAttribute(`relative transition overflow-hidden bg-[var(--license-block-bg)] py-5 px-6 ${className}`, "class")}> <div class="transition font-bold" style="color: var(--text-secondary)"> ${title} </div> <a${addAttribute(postUrl, "href")} class="link text-[var(--primary)]"> ${postUrl} </a> <div class="flex gap-6 mt-2"> <div> <div class="transition text-sm" style="color: var(--text-tertiary)">${i18n(I18nKey.author)}</div> <div class="transition line-clamp-2" style="color: var(--text-secondary)">${profileConf.name}</div> </div> <div> <div class="transition text-sm" style="color: var(--text-tertiary)">${i18n(I18nKey.publishedAt)}</div> <div class="transition line-clamp-2" style="color: var(--text-secondary)">${formatDateToYYYYMMDD(pubDate)}</div> </div> <div> <div class="transition text-black/30 dark:text-white/30 text-sm">${i18n(I18nKey.license)}</div> <a${addAttribute(licenseConf.url, "href")} target="_blank" class="link text-[var(--primary)] line-clamp-2">${licenseConf.name}</a> </div> </div> ${renderComponent($$result, "Icon", $$Icon, { "name": "fa6-brands:creative-commons", "class": "transition text-[15rem] absolute pointer-events-none right-6 top-1/2 -translate-y-1/2 text-black/5 dark:text-white/5" })} </div>`;
+}, "/home/runner/work/AllenBlog/AllenBlog/src/components/misc/License.astro", void 0);export{$$License as default};

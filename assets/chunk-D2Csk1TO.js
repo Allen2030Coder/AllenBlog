@@ -1,0 +1,3 @@
+import {c as createComponent,m as maybeRenderHead,a as renderTemplate}from'./chunk-Div6EpxG.js';import'./chunk-BBKQStYD.js';const $$GlobalStyles = createComponent(($$result, $$props, $$slots) => {
+  return renderTemplate`<!-- 字体预加载 --><link rel="preconnect" href="https://cdn.xrbk.cn" crossorigin><link rel="preload" href="https://cdn.xrbk.cn/fonts/ChillRoundFRegular/result.css" as="style" onload="this.onload=null;this.rel='stylesheet'">${maybeRenderHead()}<noscript><link rel="stylesheet" href="https://cdn.xrbk.cn/fonts/ChillRoundFRegular/result.css"></noscript><!-- 字体显示优化 -->`;
+}, "/home/runner/work/AllenBlog/AllenBlog/src/components/GlobalStyles.astro", void 0);export{$$GlobalStyles as default};

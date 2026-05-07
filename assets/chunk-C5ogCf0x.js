@@ -1,0 +1,13 @@
+import {c as createComponent,m as maybeRenderHead,u as unescapeHTML,a as renderTemplate}from'./chunk-Div6EpxG.js';const html = () => "<blockquote>\n<p>仅适用于<a href=\"https://github.com/anzhiyu-c/hexo-theme-anzhiyu\" rel=\"nofollow noopener noreferrer\" target=\"_blank\">hexo-theme-anzhiyu</a>，其他请自行测试</p>\n</blockquote>\n<section><h2 id=\"文件路径\">文件路径<a class=\"anchor\" href=\"#文件路径\"><span class=\"anchor-icon\" data-pagefind-ignore=\"\">#</span></a></h2><p>打开博客根目录目录 依次打开 /themes/anzhiyu/source/js 里面有一个utils.js 打开它 按ctrl+f搜索 getCustomPlayList: function () 文件参数是这样的 修改const userId = 你歌单的id 如果想修改歌单音乐服务商就改const userServer = netease或tencent或kugou,或xiami或 baidu 这样访问 /music/接可以了，不用在后面加?id=歌单id&#x26;server=音乐服务商</p><blockquote>\n<p>参考 <a href=\"https://blog.csdn.net/2202_75762088/article/details/138251572#:~:text=%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%B0%B1%E6%98%AFBloghemesanzhiyusourcejsutils.js%20%E6%89%93%E5%BC%80%E8%AF%A5%E6%96%87%E4%BB%B6%EF%BC%8C%E6%8C%89Ctrl%2BF%E6%90%9C%E7%B4%A2%20getCustomPlayList%3A,function%20%28%29%20%E8%BF%99%E4%B8%AA%E5%87%BD%E6%95%B0%E5%86%85%E5%B0%B1%E6%98%AF%E5%85%B3%E4%BA%8E%E9%9F%B3%E4%B9%90%E6%BA%90%E7%9A%84%E8%AE%BE%E7%BD%AE%EF%BC%8C%E6%94%B9%E6%88%90%E8%87%AA%E5%B7%B1%E7%9A%84%E5%B0%B1%E5%A5%BD%EF%BC%9A\" rel=\"nofollow noopener noreferrer\" target=\"_blank\">避坑：我找到了Hexo安知鱼的音乐馆配置(目前好像还没有教程)</a>。</p>\n</blockquote></section>";
+
+				const frontmatter = {"title":"安知鱼主题音乐馆默认歌单修改","published":"2024-12-14T00:00:00.000Z","description":"本文介绍了如何在 hexo-theme-anzhiyu 主题中，通过修改 utils.js 文件中的 getCustomPlayList 函数，自定义歌单ID及音乐服务商，实现简化访问音乐接口的配置方法。","image":"https://imgse.fishcpy.top/upload/675d9bd5ef6de.png","tags":["主题","安知鱼"],"category":"主题","draft":false,"customSlug":"20","minutes":1,"words":141,"excerpt":"打开博客根目录目录 依次打开 /themes/anzhiyu/source/js 里面有一个utils.js 打开它 按ctrl+f搜索 getCustomPlayList: function () 文件参数是这样的 修改const userId = 你歌单的id 如果想修改歌单音乐服务商就改const userServer = netease或tencent或kugou,或xiami或 baidu 这样访问 /music/接可以了，不用在后面加?id=歌单id&server=音乐服务商"};
+				const file = "/home/runner/work/AllenBlog/AllenBlog/src/content/posts/安知鱼主题音乐馆默认歌单修改.md";
+				const url = undefined;
+
+				const Content = createComponent((result, _props, slots) => {
+					const { layout, ...content } = frontmatter;
+					content.file = file;
+					content.url = url;
+
+					return renderTemplate`${maybeRenderHead()}${unescapeHTML(html())}`;
+				});export{Content,Content as default,file,frontmatter,url};
